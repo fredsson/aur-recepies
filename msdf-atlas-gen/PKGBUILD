@@ -23,10 +23,13 @@ build() {
 
   git submodule update --init --recursive
 
+  mkdir _build && cd _build
+  cmake -DCMAKE_BUILD_TYPE=Release -DMSDF_ATLAS_NO_ARTERY_FONT=ON -DMSDF_ATLAS_USE_SKIA=OFF -DMSDF_ATLAS_USE_VCPKG=OFF -DMSDF_ATLAS_INSTALL=ON ..
   make
 }
 
 package() {
-  mkdir -p "$pkgdir/usr/bin/"
-  cp "$srcdir/${pkgname%-git}/bin/msdf-atlas-gen" "$pkgdir/usr/bin/msdf-atlas-gen"
+  cd "$srcdir/${pkgname%-git}"/_build
+  
+  make DESTDIR="$pkgdir/" install
 }
